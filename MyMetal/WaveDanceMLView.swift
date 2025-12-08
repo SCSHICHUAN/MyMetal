@@ -12,8 +12,8 @@ import simd
 class WaveDanceMLView: MTKView {
     
     // MARK: - Metal 核心组件
-    private var metalCommandQueue: MTLCommandQueue!
-    private var metalPipelineState: MTLRenderPipelineState!
+    private var metalCommandQueue: MTLCommandQueue?
+    private var metalPipelineState: MTLRenderPipelineState?
     
     // MARK: - 顶点和 Uniform
     struct Vertex {
@@ -32,7 +32,6 @@ class WaveDanceMLView: MTKView {
     ]
     
     private var rotation: Float = 0
-    // 暴露相机供ViewController访问
     public let camera = Camera(position: [0, 0, 5])
     
     // MARK: - 指定初始化器
@@ -104,8 +103,10 @@ class WaveDanceMLView: MTKView {
         }
     }
     
-    // MARK: - 实时计算MVP并绘制（核心：每次绘制都用最新相机参数）
+    // MARK: - 实时计算MVP并绘制
     private func drawTriangle(renderEncoder: MTLRenderCommandEncoder) {
+        
+        guard let metalPipelineState = metalPipelineState else { return }
         renderEncoder.setRenderPipelineState(metalPipelineState)
         
         // 1. 传入顶点数据
@@ -150,6 +151,7 @@ extension WaveDanceMLView: MTKViewDelegate {
     
     func draw(in view: MTKView) {
         guard let drawable = currentDrawable,
+              let metalCommandQueue = metalCommandQueue,
               let commandBuffer = metalCommandQueue.makeCommandBuffer(),
               let renderPassDescriptor = currentRenderPassDescriptor,
               let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else { return }
