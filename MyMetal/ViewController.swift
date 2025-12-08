@@ -84,7 +84,7 @@ class ViewController: UIViewController {
             let btn = UIButton(type: .system)
             btn.setTitle(title, for: .normal)
             btn.setTitleColor(.white, for: .normal)
-            btn.backgroundColor = .black.withAlphaComponent(0.7)
+            btn.backgroundColor = .white.withAlphaComponent(0.2)
             btn.layer.cornerRadius = 8
             btn.clipsToBounds = true
             btn.tag = btnTags[index]
